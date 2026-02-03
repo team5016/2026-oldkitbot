@@ -12,6 +12,11 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 
+import java.io.IOException;
+
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.path.PathPlannerPath;
+
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
  * "declarative" paradigm, very little robot logic should actually be handled in the {@link Robot}
@@ -56,7 +61,15 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    // An example command will be run in autonomous
-    return Commands.none();
+    try {
+      // Fixed: removed "new" keyword and changed path name (no spaces)
+      PathPlannerPath path = PathPlannerPath.fromPathFile("Safe otherside pickup");
+      
+      return AutoBuilder.followPath(path);
+    } catch (Exception e) {
+      System.err.println("Failed to load PathPlanner path: " + e.getMessage());
+      e.printStackTrace();
+      return Commands.none();
+    }
   }
 }
