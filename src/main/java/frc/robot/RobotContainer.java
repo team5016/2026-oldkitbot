@@ -12,8 +12,6 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 
-import java.io.IOException;
-
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.path.PathPlannerPath;
 
@@ -27,16 +25,17 @@ public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   private final DriveSubsystem robotDrive = new DriveSubsystem();
 
-  // Replace with CommandPS4Controller or CommandJoystick if needed
-  private final CommandXboxController m_driverController =
-      new CommandXboxController(OperatorConstants.kDriverControllerPort);
+  private final CommandXboxController driverController =
+      new CommandXboxController(OperatorConstants.driverControllerPort);
+        private final CommandXboxController operatorController =
+      new CommandXboxController(OperatorConstants.driverControllerPort);
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     // Configure the trigger bindings
     configureBindings();
 
-    CameraServer.startAutomaticCapture(); // adds to dashboard
+    //CameraServer.startAutomaticCapture(); // adds to dashboard
   }
 
   /**
@@ -51,8 +50,8 @@ public class RobotContainer {
         // hand, and turning controlled by the right.
         new DefaultDrive(
             robotDrive,
-            () -> -m_driverController.getLeftY(),
-            () -> -m_driverController.getRightX()));
+            () -> -driverController.getLeftY(),
+            () -> -driverController.getRightX()));
   }
 
   /**
