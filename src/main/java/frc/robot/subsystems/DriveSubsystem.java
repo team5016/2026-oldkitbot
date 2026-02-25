@@ -12,9 +12,9 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
 public class DriveSubsystem extends SubsystemBase {
     private final WPI_TalonSRX frontRight = new WPI_TalonSRX(4);
-  private final WPI_TalonSRX backRight = new WPI_TalonSRX(2);
-  private final WPI_TalonSRX frontLeft = new WPI_TalonSRX(3);
-  private final WPI_TalonSRX backLeft = new WPI_TalonSRX(1);
+  private final WPI_TalonSRX rearRight = new WPI_TalonSRX(5);
+  private final WPI_TalonSRX frontLeft = new WPI_TalonSRX(6);
+  private final WPI_TalonSRX rearLeft = new WPI_TalonSRX(7);
 
   // The robot's drive
   private final DifferentialDrive robotDrive;
@@ -22,8 +22,8 @@ public class DriveSubsystem extends SubsystemBase {
   /** Creates a new DriveSubsystem. */
   public DriveSubsystem() {
     
-    backRight.follow(frontRight);
-    backLeft.follow(frontLeft);    
+    rearRight.follow(frontRight);
+    rearLeft.follow(frontLeft);    
     robotDrive = new DifferentialDrive(frontLeft::set, frontRight::set);
     
     SendableRegistry.addChild(robotDrive, frontLeft);
@@ -33,7 +33,7 @@ public class DriveSubsystem extends SubsystemBase {
     // result in both sides moving forward. Depending on how your robot's
     // gearbox is constructed, you might have to invert the left side instead.
     frontRight.setInverted(true);
-    backRight.setInverted(true);
+    rearRight.setInverted(true);
   }
 
   /**
