@@ -20,8 +20,8 @@ public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
 
   private final RobotContainer m_robotContainer;
-  private final XboxController opController = new XboxController(0);
-  private final XboxController driController = new XboxController(1);
+  private final XboxController opController = new XboxController(1);
+  private final XboxController driController = new XboxController(0);
 
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -93,12 +93,13 @@ public class Robot extends TimedRobot {
   /** This function is called periodically during operator control. */
   @Override
   public void teleopPeriodic() {
-    if(opController.getLeftTriggerAxis() > 0.25){//change the value to change sensitivity (lower is more sensitive)
+    /*if(opController.getLeftTriggerAxis() > 0.25){//change the value to change sensitivity (lower is more sensitive)
       CommandScheduler.getInstance().schedule(m_robotContainer.intakeCommand());
     }else if(opController.getRightTriggerAxis() > 0.25){
       CommandScheduler.getInstance().schedule(m_robotContainer.shootCommand());
     }else{
       m_robotContainer.intakeCommand().cancel();
+      m_robotContainer.shootCommand().cancel();
     }
     
     if(driController.getLeftY()>0.25){
@@ -115,7 +116,7 @@ public class Robot extends TimedRobot {
       CommandScheduler.getInstance().schedule(m_robotContainer.driveRightCommand(driController.getRightY()));
     }else{
       m_robotContainer.driveRightCommand(0.0).cancel();
-    }
+    }*/
 
   }
 
