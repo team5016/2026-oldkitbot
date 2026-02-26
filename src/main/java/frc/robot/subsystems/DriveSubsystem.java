@@ -11,7 +11,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
 public class DriveSubsystem extends SubsystemBase {
-    private final WPI_TalonSRX frontRight = new WPI_TalonSRX(4);
+  private final WPI_TalonSRX frontRight = new WPI_TalonSRX(4);
   private final WPI_TalonSRX rearRight = new WPI_TalonSRX(5);
   private final WPI_TalonSRX frontLeft = new WPI_TalonSRX(6);
   private final WPI_TalonSRX rearLeft = new WPI_TalonSRX(7);
@@ -54,4 +54,5 @@ public class DriveSubsystem extends SubsystemBase {
   public void setMaxOutput(double maxOutput) {
     robotDrive.setMaxOutput(maxOutput);
   }
+ 
 }
