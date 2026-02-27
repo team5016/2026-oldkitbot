@@ -2,19 +2,19 @@
 
 package frc.robot.commands;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.IntakeAndShooter;
+import frc.robot.subsystems.IntakeAndFlywheel;
 import frc.robot.subsystems.Feeder;
 /** An example command that uses an example subsystem. */
 public class Shoot extends Command {
   @SuppressWarnings("PMD.UnusedPrivateField")
-    private final IntakeAndShooter Intake;
+    private final IntakeAndFlywheel Intake;
     private final Feeder f = new Feeder();
   /**
    * Creates a new ExampleCommand.
    *
    * @param subsystem The subsystem used by this command.
    */
-  public Shoot(IntakeAndShooter subsystem, Feeder s) {
+  public Shoot(IntakeAndFlywheel subsystem, Feeder s) {
     Intake = subsystem;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(subsystem,s);
