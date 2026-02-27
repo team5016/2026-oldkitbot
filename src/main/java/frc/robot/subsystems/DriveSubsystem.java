@@ -6,7 +6,6 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.util.sendable.SendableRegistry;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
-import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
@@ -35,6 +34,9 @@ public class DriveSubsystem extends SubsystemBase {
     // gearbox is constructed, you might have to invert the left side instead.
     frontRight.setInverted(false);
     rearRight.setInverted(false);
+
+    // Limit max speed with scaling factor
+    robotDrive.setMaxOutput(0.75);
   }
 
   /**
@@ -43,25 +45,12 @@ public class DriveSubsystem extends SubsystemBase {
    * @param fwd the commanded forward movement
    * @param rot the commanded rotation
    */
-  public Command runAsArcade(double fwd, double rot) {
-    return this.run(() -> robotDrive.arcadeDrive(fwd, rot));
-  }
-
-  public Command runAsTank(double leftSpeed, double rightSpeed) {
-    return this.run(() -> robotDrive.tankDrive(leftSpeed, rightSpeed));
+  public void arcade(double fwd, double rot) {
+    robotDrive.arcadeDrive(fwd, rot);
   }
 
   public void tankDrive(double leftSpeed, double rightSpeed) {
     robotDrive.tankDrive(leftSpeed, rightSpeed);
-  }
-
-  /**
-   * Sets the max output of the drive. Useful for scaling the drive to drive more slowly.
-   *
-   * @param maxOutput the maximum output to which the drive will be constrained
-   */
-  public void setMaxOutput(double maxOutput) {
-    robotDrive.setMaxOutput(maxOutput);
   }
  
 }
