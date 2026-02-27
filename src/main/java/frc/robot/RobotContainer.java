@@ -77,20 +77,29 @@ public class RobotContainer {
     // Operator
     double intakeShootSpeed = 1.0;
     double feederSpeed = 1.0;
+    double feederSpeedFactor = 0.2;
 
     //  Full-speed intake
-    operatorController.a().onTrue(intakeAndFlywheel.spin(intakeShootSpeed));
-    operatorController.a().onFalse(intakeAndFlywheel.stop());
+    operatorController.a()
+      .onTrue(intakeAndFlywheel.spin(intakeShootSpeed))
+      .onFalse(intakeAndFlywheel.stop());
 
     //  Full-speed intake/feed/shoot
-    operatorController.b().onTrue(intakeAndFlywheel.spin(intakeShootSpeed).andThen(feeder.spin(feederSpeed)));
-    operatorController.b().onFalse(intakeAndFlywheel.stop().alongWith(feeder.stop()));
+    operatorController.b()
+      .onTrue(intakeAndFlywheel.spin(intakeShootSpeed).andThen(feeder.spin(feederSpeed)))
+      .onFalse(intakeAndFlywheel.stop().alongWith(feeder.stop()));
 
     //  Variable-speed intake/shoot (controller trigger)
 
     //  Variable-speed feed (controller trigger)
 
     //  Slow forward/reverse of feeder in case of jam (D-pad)
+    operatorController.povUp() // Forward
+      .onTrue(feeder.spin(feederSpeed * feederSpeedFactor))
+      .onFalse(feeder.stop());
+    operatorController.povDown() // Reverse
+      .onTrue(feeder.spin(-1 * feederSpeed * feederSpeedFactor))
+      .onFalse(feeder.stop());
   }
 
   /**
