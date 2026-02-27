@@ -61,7 +61,7 @@ public class RobotContainer {
     );
 
     // Operator
-    double intakeShootSpeed = 0.5;
+    double intakeShootSpeed = 1.0;
     double feederSpeed = 1.0;
     operatorController.a().onTrue(intakeAndFlywheel.spin(intakeShootSpeed));
     operatorController.a().onFalse(intakeAndFlywheel.stop());
