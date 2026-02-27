@@ -34,7 +34,7 @@ public class RobotContainer {
   private final Feeder feeder = new Feeder();
   private final Intake intakeCommmand = new Intake(intakeAndFlywheel, feeder);
   private final Shoot shootCommand = new Shoot(intakeAndFlywheel, feeder);
-  private final CommandXboxController driverController = new CommandXboxController(
+  private final CommandPS4Controller driverController = new CommandPS4Controller(
       OperatorConstants.driverControllerPort);
   private final CommandXboxController operatorController = new CommandXboxController(
       OperatorConstants.operatorControllerPort);
