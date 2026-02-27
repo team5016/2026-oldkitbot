@@ -79,6 +79,7 @@ public class RobotContainer {
     double intakeShootSpeed = 1.0;
     double feederSpeed = 1.0;
     double feederSpeedFactor = 0.2;
+    double triggerPressThreshold = 0.1;
 
     //  Full-speed intake
     operatorController.a()
@@ -91,12 +92,12 @@ public class RobotContainer {
       .onFalse(intakeAndFlywheel.stop().alongWith(feeder.stop()));
 
     //  Variable-speed intake/shoot (controller trigger)
-    operatorController.rightTrigger(0.1)
+    operatorController.rightTrigger(triggerPressThreshold)
       .onTrue(intakeAndFlywheel.spin(intakeShootSpeed * operatorController.getRightTriggerAxis()))
       .onFalse(intakeAndFlywheel.stop());
 
     //  Variable-speed feed (controller trigger)
-    operatorController.leftTrigger(0.1)
+    operatorController.leftTrigger(triggerPressThreshold)
       .onTrue(feeder.spin(feederSpeed * operatorController.getLeftTriggerAxis()))
       .onFalse(feeder.stop());
 
