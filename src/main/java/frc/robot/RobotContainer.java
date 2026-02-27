@@ -68,7 +68,7 @@ public class RobotContainer {
      *  probably because Commands.run only marks the subsystem as a dependency,
      *  it does not actually use a command tied to the subsystem itself
      */
-    
+    robotDrive.setMaxOutput(0.75);
     robotDrive.setDefaultCommand(
       Commands.run(
         ()-> robotDrive.tankDrive(-driverController.getLeftY(), driverController.getRightY()), robotDrive)

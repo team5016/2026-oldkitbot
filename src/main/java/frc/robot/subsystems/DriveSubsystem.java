@@ -35,8 +35,6 @@ public class DriveSubsystem extends SubsystemBase {
     frontRight.setInverted(false);
     rearRight.setInverted(false);
 
-    // Limit max speed with scaling factor
-    robotDrive.setMaxOutput(0.75);
   }
 
   /**
@@ -51,6 +49,14 @@ public class DriveSubsystem extends SubsystemBase {
 
   public void tankDrive(double leftSpeed, double rightSpeed) {
     robotDrive.tankDrive(leftSpeed, rightSpeed);
+  }
+
+  /**
+   * Set scaling factor for the max output of the drive, which can help limit speed.
+   * @param scalingFactor The value multipled with the drive output percentage
+   */
+  public void setMaxOutput(double scalingFactor) {
+    robotDrive.setMaxOutput(scalingFactor);
   }
  
 }
