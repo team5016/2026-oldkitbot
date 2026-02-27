@@ -55,6 +55,7 @@ public class RobotContainer {
    */
   private void configureBindings() {
     // Driver
+    double driveScalingFactor = 0.75;
     /* Notes for programmers:
      *  this does not work:
      *     robotDrive.setDefaultCommand(robotDrive.runAsTank(-driverController.getLeftY(), -driverController.getRightY()));
@@ -68,7 +69,7 @@ public class RobotContainer {
      *  probably because Commands.run only marks the subsystem as a dependency,
      *  it does not actually use a command tied to the subsystem itself
      */
-    robotDrive.setMaxOutput(0.75);
+    robotDrive.setMaxOutput(driveScalingFactor);
     robotDrive.setDefaultCommand(
       Commands.run(
         ()-> robotDrive.tankDrive(-driverController.getLeftY(), driverController.getRightY()), robotDrive)
@@ -90,8 +91,14 @@ public class RobotContainer {
       .onFalse(intakeAndFlywheel.stop().alongWith(feeder.stop()));
 
     //  Variable-speed intake/shoot (controller trigger)
+    operatorController.rightTrigger(0.1)
+      .onTrue(intakeAndFlywheel.spin(intakeShootSpeed * operatorController.getRightTriggerAxis()))
+      .onFalse(intakeAndFlywheel.stop());
 
     //  Variable-speed feed (controller trigger)
+    operatorController.leftTrigger(0.1)
+      .onTrue(feeder.spin(feederSpeed * operatorController.getLeftTriggerAxis()))
+      .onFalse(feeder.stop());
 
     //  Slow forward/reverse of feeder in case of jam (D-pad)
     operatorController.povUp() // Forward
