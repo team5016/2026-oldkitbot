@@ -6,6 +6,7 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.util.sendable.SendableRegistry;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
@@ -42,12 +43,12 @@ public class DriveSubsystem extends SubsystemBase {
    * @param fwd the commanded forward movement
    * @param rot the commanded rotation
    */
-  public void arcadeDrive(double fwd, double rot) {
-    robotDrive.arcadeDrive(fwd, rot);
+  public Command runAsArcade(double fwd, double rot) {
+    return this.run(() -> robotDrive.arcadeDrive(fwd, rot));
   }
 
-  public void tankDrive(double leftSpeed, double rightSpeed) {
-    robotDrive.tankDrive(leftSpeed, rightSpeed);
+  public Command runAsTank(double leftSpeed, double rightSpeed) {
+    return this.run(() -> robotDrive.tankDrive(leftSpeed, rightSpeed));
   }
 
   /**

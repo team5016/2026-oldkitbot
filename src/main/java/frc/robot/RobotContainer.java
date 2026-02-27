@@ -54,9 +54,7 @@ public class RobotContainer {
    */
   private void configureBindings() {
     // Driver
-    robotDrive.setDefaultCommand(
-        Commands.run(() -> robotDrive.tankDrive(-driverController.getLeftY(), -driverController.getRightY()),
-            robotDrive));
+    robotDrive.setDefaultCommand(robotDrive.runAsTank(-driverController.getLeftY(), -driverController.getRightY()));
 
     // Operator
     double intakeShootSpeed = 0.5;
