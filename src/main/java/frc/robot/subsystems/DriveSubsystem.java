@@ -46,6 +46,10 @@ public class DriveSubsystem extends SubsystemBase {
     robotDrive.arcadeDrive(fwd, rot);
   }
 
+  public void tankDrive(double leftSpeed, double rightSpeed) {
+    robotDrive.tankDrive(leftSpeed, rightSpeed);
+  }
+
   /**
    * Sets the max output of the drive. Useful for scaling the drive to drive more slowly.
    *

@@ -5,15 +5,11 @@
 package frc.robot;
 
 import frc.robot.Constants.OperatorConstants;
-import frc.robot.commands.DefaultDrive;
 import frc.robot.commands.Intake;
 import frc.robot.commands.Shoot;
-import frc.robot.commands.DriveLeft;
-import frc.robot.commands.DriveRight;
 import frc.robot.subsystems.DriveSubsystem;
-import frc.robot.subsystems.IntakeAndShooter;
+import frc.robot.subsystems.IntakeAndFlywheel;
 import frc.robot.subsystems.Feeder;
-import frc.robot.subsystems.TankDrive;
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -23,62 +19,53 @@ import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.path.PathPlannerPath;
 
 /**
- * This class is where the bulk of the robot should be declared. Since Command-based is a
- * "declarative" paradigm, very little robot logic should actually be handled in the {@link Robot}
- * periodic methods (other than the scheduler calls). Instead, the structure of the robot (including
+ * This class is where the bulk of the robot should be declared. Since
+ * Command-based is a
+ * "declarative" paradigm, very little robot logic should actually be handled in
+ * the {@link Robot}
+ * periodic methods (other than the scheduler calls). Instead, the structure of
+ * the robot (including
  * subsystems, commands, and trigger mappings) should be declared here.
  */
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   private final DriveSubsystem robotDrive = new DriveSubsystem();
-  private final IntakeAndShooter IandS = new IntakeAndShooter();
-  private final Feeder f = new Feeder();
-   private final TankDrive t = new TankDrive();
-  private final Intake intakeCom = new Intake(IandS,f);
-  private final Shoot shoot = new Shoot(IandS,f);
-  private final DriveLeft left = new DriveLeft(t);
-  private final DriveRight right = new DriveRight(t);
-  private final CommandXboxController driverController =
-      new CommandXboxController(OperatorConstants.driverControllerPort);
-        private final CommandXboxController operatorController =
-      new CommandXboxController(OperatorConstants.driverControllerPort);
+  private final IntakeAndFlywheel intakeAndFlywheel = new IntakeAndFlywheel();
+  private final Feeder feeder = new Feeder();
+  private final Intake intakeCommmand = new Intake(intakeAndFlywheel, feeder);
+  private final Shoot shootCommand = new Shoot(intakeAndFlywheel, feeder);
+  private final CommandXboxController driverController = new CommandXboxController(
+      OperatorConstants.driverControllerPort);
+  private final CommandXboxController operatorController = new CommandXboxController(
+      OperatorConstants.driverControllerPort);
 
-  /** The container for the robot. Contains subsystems, OI devices, and commands. */
+  /**
+   * The container for the robot. Contains subsystems, OI devices, and commands.
+   */
   public RobotContainer() {
     // Configure the trigger bindings
     configureBindings();
 
-    //CameraServer.startAutomaticCapture(); // adds to dashboard
-  }
-  public Command driveLeftCommand(Double s){
-    left.setSpeed(s);
-    return left;
-  }
-  public Command driveRightCommand(Double s){
-    right.setSpeed(s);
-    return right;
-  }
-  public Command intakeCommand(){
-    return intakeCom;
-  }
-  public Command shootCommand(){
-    return shoot;
+    // CameraServer.startAutomaticCapture(); // adds to dashboard
   }
 
   /**
    * Use this method to define your trigger->command mappings.
    */
   private void configureBindings() {
-
-    // Configure default commands
-    // Set the default drive command to split-stick arcade drive
+    // Driver
     robotDrive.setDefaultCommand(
-        // A split-stick arcade command, with forward/backward controlled by the left
-        // hand, and turning controlled by the right.
-        new DefaultDrive(
-            robotDrive,
-            () -> -driverController.getLeftY(),
-            () -> -driverController.getRightX()));
+        Commands.run(() -> robotDrive.tankDrive(-driverController.getLeftY(), -driverController.getRightY()),
+            robotDrive));
+
+    // Operator
+    double intakeShootSpeed = 0.5;
+    double feederSpeed = 1.0;
+    operatorController.a().onTrue(intakeAndFlywheel.spin(intakeShootSpeed));
+    operatorController.a().onFalse(intakeAndFlywheel.stop());
+
+    operatorController.b().onTrue(intakeAndFlywheel.spin(intakeShootSpeed).andThen(feeder.spin(feederSpeed)));
+    operatorController.b().onFalse(intakeAndFlywheel.stop().alongWith(feeder.stop()));
   }
 
   /**
@@ -90,7 +77,7 @@ public class RobotContainer {
     try {
       // Fixed: removed "new" keyword and changed path name (no spaces)
       PathPlannerPath path = PathPlannerPath.fromPathFile("Safe otherside pickup");
-      
+
       return AutoBuilder.followPath(path);
     } catch (Exception e) {
       System.err.println("Failed to load PathPlanner path: " + e.getMessage());
