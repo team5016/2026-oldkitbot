@@ -58,7 +58,7 @@ public class RobotContainer {
     //robotDrive.setDefaultCommand(robotDrive.runAsTank(-driverController.getLeftY(), -driverController.getRightY()));
     robotDrive.setDefaultCommand(
       Commands.run(
-        ()-> robotDrive.tankDrive(-driverController.getLeftY(), -driverController.getRightY()), robotDrive)
+        ()-> robotDrive.tankDrive(-driverController.getLeftY(), driverController.getRightY()), robotDrive)
     );
 
     // Operator
