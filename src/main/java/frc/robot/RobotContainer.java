@@ -55,7 +55,20 @@ public class RobotContainer {
    */
   private void configureBindings() {
     // Driver
-    //robotDrive.setDefaultCommand(robotDrive.runAsTank(-driverController.getLeftY(), -driverController.getRightY()));
+    /* Notes for programmers:
+     *  this does not work:
+     *     robotDrive.setDefaultCommand(robotDrive.runAsTank(-driverController.getLeftY(), -driverController.getRightY()));
+     *  probably because 'runAsTank' is/was setting up a run command inside the subsystem using this.run
+     * 
+     *  this does work:
+     *    robotDrive.setDefaultCommand(
+            Commands.run(
+              ()-> robotDrive.tankDrive(-driverController.getLeftY(), driverController.getRightY()), robotDrive)
+            );
+     *  probably because Commands.run only marks the subsystem as a dependency,
+     *  it does not actually use a command tied to the subsystem itself
+     */
+    
     robotDrive.setDefaultCommand(
       Commands.run(
         ()-> robotDrive.tankDrive(-driverController.getLeftY(), driverController.getRightY()), robotDrive)
@@ -64,11 +77,20 @@ public class RobotContainer {
     // Operator
     double intakeShootSpeed = 1.0;
     double feederSpeed = 1.0;
+
+    //  Full-speed intake
     operatorController.a().onTrue(intakeAndFlywheel.spin(intakeShootSpeed));
     operatorController.a().onFalse(intakeAndFlywheel.stop());
 
+    //  Full-speed intake/feed/shoot
     operatorController.b().onTrue(intakeAndFlywheel.spin(intakeShootSpeed).andThen(feeder.spin(feederSpeed)));
     operatorController.b().onFalse(intakeAndFlywheel.stop().alongWith(feeder.stop()));
+
+    //  Variable-speed intake/shoot (controller trigger)
+
+    //  Variable-speed feed (controller trigger)
+
+    //  Slow forward/reverse of feeder in case of jam (D-pad)
   }
 
   /**
