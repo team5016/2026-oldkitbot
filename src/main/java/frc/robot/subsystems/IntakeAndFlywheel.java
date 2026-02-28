@@ -15,16 +15,6 @@ public class IntakeAndFlywheel extends SubsystemBase{
     public Command spin(double speed) {
         return this.runOnce(() -> motor.set(speed));
     }
- 
- 
-    public Command back_spin(double speed) {
-        return this.runOnce(() -> motor.set(speed));
-    }
-
-
-
-
-
 
     public Command stop() {
         return this.runOnce(() -> motor.set(0));

@@ -73,38 +73,53 @@ public class RobotContainer {
     robotDrive.setDefaultCommand(
       Commands.run(
         ()-> robotDrive.tankDrive(-driverController.getLeftY(), driverController.getRightY()), robotDrive)
+        // () -> robotDrive.arcade(-driverController.getLeftY(), driverController.getRightX()), robotDrive)
     );
 
-    // Operator
-    double intakeShootSpeed = 1.0;
-    double feederSpeed = 1.0;
-    double feederSpeedFactor = 0.2;
-    double triggerPressThreshold = 0.1;
+    // Debug: print controller axes periodically
+    // Thread ctrlDebug = new Thread(() -> {
+    //   try {
+    //     while (!Thread.currentThread().isInterrupted()) {
+    //       System.out.printf(
+    //           "Driver LY=%.3f RY=%.3f LX=%.3f RX=%.3f",
+    //           driverController.getLeftY(),
+    //           driverController.getRightY(),
+    //           driverController.getLeftX(),
+    //           driverController.getRightX());
+    //       Thread.sleep(200);
+    //     }
+    //   } catch (InterruptedException e) {
+    //     System.out.print("Error caught");
+    //     Thread.currentThread().interrupt();
+    //   }
+    // }, "ControllerDebug");
+    // ctrlDebug.setDaemon(true);
+    // ctrlDebug.start();
 
-    //  Full-speed intake
+    // Operator
+    double intakeAndShootSpeed = 1.0;
+    double feederSpeed = 1.0; // positive is into hopper, negative is out of hopper
+    double feederSpeedFactor = 0.2;
+
+    //  Intake/feed to get Ball into hopper
     operatorController.a()
-      .onTrue(intakeAndFlywheel.spin(intakeShootSpeed))
+      .onTrue(intakeAndFlywheel.spin(intakeAndShootSpeed * 0.75).alongWith(feeder.spin(feederSpeed)))
+      .onFalse(intakeAndFlywheel.stop().alongWith(feeder.stop()));
+
+    //  Feed and shoot
+    operatorController.b()
+      .onTrue(feeder.spin(feederSpeed * -0.35).andThen(intakeAndFlywheel.spin(intakeAndShootSpeed)))
+      .onFalse(intakeAndFlywheel.stop().alongWith(feeder.stop()));
+
+    // Outtake only
+    operatorController.rightBumper()
+      .onTrue(intakeAndFlywheel.spin(intakeAndShootSpeed * -1.0))
       .onFalse(intakeAndFlywheel.stop());
 
-    //  Full-speed intake/feed/shoot
-    operatorController.b()
-      .onTrue(intakeAndFlywheel.spin(intakeShootSpeed *.85 ).andThen(feeder.spin(feederSpeed * -1.0)))
-      .onFalse(intakeAndFlywheel.stop().alongWith(feeder.stop()));
-
-
-    //Fullspeed outake operatorController.b()
-    operatorController.rightTrigger()
-      .onTrue(intakeAndFlywheel.back_spin(intakeShootSpeed).andThen(feeder.spin(feederSpeed)))
-      .onFalse(intakeAndFlywheel.stop().alongWith(feeder.stop()));
-
-      
-    //  Variable-speed intake/shoot (controller trigger)
-
-
-    //  Variable-speed feed (controller trigger)
-    operatorController.leftTrigger(triggerPressThreshold)
-      .onTrue(feeder.spin(feederSpeed * operatorController.getLeftTriggerAxis()))
-      .onFalse(feeder.stop());
+    //  Intake only
+    operatorController.leftBumper()
+      .onTrue(intakeAndFlywheel.spin(intakeAndShootSpeed))
+      .onFalse(intakeAndFlywheel.stop());
 
     //  Slow forward/reverse of feeder in case of jam (D-pad)
     operatorController.povUp() // Forward
