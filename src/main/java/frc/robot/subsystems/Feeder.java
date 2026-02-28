@@ -14,6 +14,8 @@ public class Feeder extends SubsystemBase {
         return this.runOnce(() -> motor.set(speed));
     }
 
+    
+
     public Command stop() {
         return this.runOnce(() -> motor.set(0));
     }
