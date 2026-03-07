@@ -35,10 +35,11 @@ public class RobotContainer {
   private final Feeder feeder = new Feeder();
   private final Intake intakeCommmand = new Intake(intakeAndFlywheel, feeder);
   private final Shoot shootCommand = new Shoot(intakeAndFlywheel, feeder);
-  private final CommandPS4Controller driverController = new CommandPS4Controller(
+  private final CommandXboxController driverController = new CommandXboxController(
       OperatorConstants.driverControllerPort);
   private final CommandXboxController operatorController = new CommandXboxController(
       OperatorConstants.operatorControllerPort);
+  //private final CommandGenericHID driverController = new CommandGenericHID(OperatorConstants.driverControllerPort);
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -72,29 +73,12 @@ public class RobotContainer {
     robotDrive.setMaxOutput(driveScalingFactor);
     robotDrive.setDefaultCommand(
       Commands.run(
-        ()-> robotDrive.tankDrive(-driverController.getLeftY(), driverController.getRightY()), robotDrive)
-        // () -> robotDrive.arcade(-driverController.getLeftY(), driverController.getRightX()), robotDrive)
+        //()-> robotDrive.tankDrive(-driverController.getLeftY(), driverController.getRightY()), robotDrive)
+        () -> robotDrive.arcade((operatorController.getRightX() * 0.75), operatorController.getLeftY()), robotDrive)
     );
 
-    // Debug: print controller axes periodically
-    // Thread ctrlDebug = new Thread(() -> {
-    //   try {
-    //     while (!Thread.currentThread().isInterrupted()) {
-    //       System.out.printf(
-    //           "Driver LY=%.3f RY=%.3f LX=%.3f RX=%.3f",
-    //           driverController.getLeftY(),
-    //           driverController.getRightY(),
-    //           driverController.getLeftX(),
-    //           driverController.getRightX());
-    //       Thread.sleep(200);
-    //     }
-    //   } catch (InterruptedException e) {
-    //     System.out.print("Error caught");
-    //     Thread.currentThread().interrupt();
-    //   }
-    // }, "ControllerDebug");
-    // ctrlDebug.setDaemon(true);
-    // ctrlDebug.start();
+
+
 
     // Operator
     double intakeAndShootSpeed = 1.0;
@@ -102,30 +86,30 @@ public class RobotContainer {
     double feederSpeedFactor = 0.2;
 
     //  Intake/feed to get Ball into hopper
-    operatorController.a()
+    driverController.a()
       .onTrue(intakeAndFlywheel.spin(intakeAndShootSpeed * 0.75).alongWith(feeder.spin(feederSpeed)))
       .onFalse(intakeAndFlywheel.stop().alongWith(feeder.stop()));
 
     //  Feed and shoot
-    operatorController.b()
+    driverController.b()
       .onTrue(feeder.spin(feederSpeed * -0.35).andThen(intakeAndFlywheel.spin(intakeAndShootSpeed)))
       .onFalse(intakeAndFlywheel.stop().alongWith(feeder.stop()));
 
     // Outtake only
-    operatorController.rightBumper()
+    driverController.rightBumper()
       .onTrue(intakeAndFlywheel.spin(intakeAndShootSpeed * -1.0))
       .onFalse(intakeAndFlywheel.stop());
 
     //  Intake only
-    operatorController.leftBumper()
+    driverController.leftBumper()
       .onTrue(intakeAndFlywheel.spin(intakeAndShootSpeed))
       .onFalse(intakeAndFlywheel.stop());
 
     //  Slow forward/reverse of feeder in case of jam (D-pad)
-    operatorController.povUp() // Forward
+    driverController.povUp() // Forward
       .onTrue(feeder.spin(feederSpeed * feederSpeedFactor))
       .onFalse(feeder.stop());
-    operatorController.povDown() // Reverse
+    driverController.povDown() // Reverse
       .onTrue(feeder.spin(-1 * feederSpeed * feederSpeedFactor))
       .onFalse(feeder.stop());
   }
@@ -136,15 +120,16 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    try {
-      // Fixed: removed "new" keyword and changed path name (no spaces)
-      PathPlannerPath path = PathPlannerPath.fromPathFile("Safe otherside pickup");
-
-      return AutoBuilder.followPath(path);
-    } catch (Exception e) {
-      System.err.println("Failed to load PathPlanner path: " + e.getMessage());
-      e.printStackTrace();
-      return Commands.none();
-    }
+    return intakeAndFlywheel.spin(1.0).alongWith(feeder.spin(-0.35));
+//    try {
+//      // Fixed: removed "new" keyword and changed path name (no spaces)
+//      PathPlannerPath path = PathPlannerPath.fromPathFile("Safe otherside pickup");
+//
+//      return AutoBuilder.followPath(path);
+//    } catch (Exception e) {
+//      System.err.println("Failed to load PathPlanner path: " + e.getMessage());
+//      e.printStackTrace();
+//      return Commands.none();
+//    }
   }
 }

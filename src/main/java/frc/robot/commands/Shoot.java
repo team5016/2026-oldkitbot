@@ -16,8 +16,6 @@ public class Shoot extends Command {
    */
   public Shoot(IntakeAndFlywheel subsystem, Feeder s) {
     Intake = subsystem;
-    // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(subsystem,s);
   }
 
   // Called when the command is initially scheduled.
